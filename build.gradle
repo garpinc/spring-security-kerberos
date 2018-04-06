@@ -28,6 +28,7 @@ configure(allprojects) {
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
 	apply plugin: 'propdeps'
+	apply plugin: 'osgi'
 
 	group = 'org.springframework.security.kerberos'
 
@@ -64,6 +65,10 @@ configure(subprojects) { subproject ->
 			include "notice.txt"
 			into "META-INF"
 			expand(copyright: new Date().format('yyyy'), version: project.version)
+		}
+		
+		manifest {
+			instruction 'Import-Package', '!org.apache.commons.logging.*, *, org.apache.commons.logging;version="0.0.0"'
 		}
 	}
 
@@ -124,8 +129,9 @@ project('spring-security-kerberos-client') {
 	description = 'Spring Security Kerberos Client'
 
 	configurations {
-		all*.exclude group: "org.apache.directory.api", module: "api-ldap-schema-data"
+		all*.exclude(group: 'org.apache.directory.api', module: 'api-ldap-schema-data')
 	}
+
 
 	dependencies {
 		compile project(":spring-security-kerberos-core")
